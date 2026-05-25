@@ -4,12 +4,10 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* Fondos — ahora con contraste real entre ellos */
-  --bg:      #08080a;   /* negro puro — secciones impares: Hero, Skills, Education */
-  --bg2:     #13131a;   /* gris azulado oscuro — secciones pares: About, Experience, Contact */
-  --bg3:     #1c1c26;   /* para cards y elementos elevados */
-  --card:    #161620;   /* cards dentro de secciones */
-
+  --bg:      #08080a;
+  --bg2:     #13131a;
+  --bg3:     #1c1c26;
+  --card:    #161620;
   --border:  rgba(255,255,255,0.07);
   --border2: rgba(255,255,255,0.13);
   --accent:  #e83a3a;
@@ -23,7 +21,11 @@
   --radius-sm: 8px;
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  max-width: 100%;
+  overflow-x: hidden;
+}
 
 body {
   background: var(--bg);
@@ -32,30 +34,93 @@ body {
   font-size: 16px;
   line-height: 1.65;
   overflow-x: hidden;
+  max-width: 100%;
 }
 
 a { color: inherit; text-decoration: none; }
 
-/* Scroll reveal */
+/* ── Scroll reveal ── */
 .reveal {
   opacity: 0;
   transform: translateY(28px);
   transition: opacity 0.65s ease, transform 0.65s ease;
 }
-.reveal.visible {
-  opacity: 1;
-  transform: none;
-}
+.reveal.visible { opacity: 1; transform: none; }
 .reveal-delay-1 { transition-delay: 0.1s; }
 .reveal-delay-2 { transition-delay: 0.2s; }
 .reveal-delay-3 { transition-delay: 0.3s; }
 .reveal-delay-4 { transition-delay: 0.4s; }
 
+/* ── Animaciones ── */
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.3; }
 }
-
 @keyframes spin-slow {
   to { transform: rotate(360deg); }
+}
+
+/* ════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* ── Navbar ── */
+  nav ul {
+    display: none !important;
+  }
+
+  /* ── About ── */
+  #about .about-layout {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  #about .cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+  #about .cards-grid > div[style*="span 2"] {
+    grid-column: span 1 !important;
+  }
+
+  /* ── Experience + Education ── */
+  #experience .two-col {
+    grid-template-columns: 1fr !important;
+    gap: 48px !important;
+  }
+  #experience .timeline {
+    padding-left: 20px !important;
+  }
+  #experience .tl-dot {
+    left: -26px !important;
+  }
+
+  /* ── Projects ── */
+  #projects .proj-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Contact ── */
+  #contact .contact-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  #contact .form-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Footer ── */
+  footer > div {
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 16px !important;
+  }
+
+  /* ── Tipografía ── */
+  h1 { font-size: clamp(42px, 12vw, 64px) !important; letter-spacing: -2px !important; }
+  h2 { font-size: clamp(28px, 8vw, 40px) !important; letter-spacing: -1.5px !important; }
+}
+
+@media (max-width: 480px) {
+  .section-pad { padding: 60px 5% !important; }
 }
