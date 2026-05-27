@@ -19,7 +19,6 @@ const projects = [
 
 export default function Projects() {
   const [hovered, setHovered] = useState(null);
-  const [expanded, setExpanded] = useState(null);
 
   return (
     <section id="projects" style={s.section}>
@@ -31,19 +30,16 @@ export default function Projects() {
           <p style={s.sub}>Proyectos reales — no ejercicios, cosas que funcionan y tienen código detrás.</p>
         </div>
 
-        <div style={s.grid}>
+        {/* className añadido para responsive */}
+        <div style={s.grid} className="proj-grid">
 
           {projects.map((proj, i) => (
             <div
               key={proj.id}
-              style={{
-                ...s.card,
-                ...(hovered === i ? s.cardHover : {}),
-              }}
+              style={{ ...s.card, ...(hovered === i ? s.cardHover : {}) }}
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(null)}
             >
-              {/* Thumbnail */}
               <div style={{
                 ...s.thumb,
                 background: 'linear-gradient(135deg, rgba(232,58,58,0.18) 0%, rgba(8,8,10,0.95) 100%)',
@@ -52,14 +48,12 @@ export default function Projects() {
                   <div style={s.thumbRM}>RM.</div>
                   <div style={s.thumbSub}>portfolio · unsitiogenial.es</div>
                 </div>
-                {/* Live badge */}
                 <div style={s.liveBadge}>
                   <span style={s.liveDot} />
                   En vivo
                 </div>
               </div>
 
-              {/* Body */}
               <div style={s.body}>
                 <div style={s.tags}>
                   {proj.tags.map((tag, ti) => (
@@ -73,7 +67,6 @@ export default function Projects() {
                 <div style={s.name}>{proj.name}</div>
                 <p style={s.desc}>{proj.desc}</p>
 
-                {/* Highlights */}
                 <div style={s.highlights}>
                   {proj.highlights.map((h, hi) => (
                     <div key={hi} style={s.highlight}>
@@ -85,33 +78,20 @@ export default function Projects() {
 
                 <div style={s.footer}>
                   <div style={s.links}>
-                    <a
-                      href={proj.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={s.linkPrimary}
+                    <a href={proj.url} target="_blank" rel="noreferrer" style={s.linkPrimary}
                       onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent2)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
                       onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.transform = 'none'; }}
-                    >
-                      Ver en vivo →
-                    </a>
-                    <a
-                      href={proj.github}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={s.linkGithub}
+                    >Ver en vivo →</a>
+                    <a href={proj.github} target="_blank" rel="noreferrer" style={s.linkGithub}
                       onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; e.currentTarget.style.color = '#fff'; }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'rgba(255,255,255,0.5)'; }}
-                    >
-                      <GithubIcon size={14} /> GitHub
-                    </a>
+                    ><GithubIcon size={14} /> GitHub</a>
                   </div>
                 </div>
               </div>
             </div>
           ))}
 
-          {/* Placeholder próximo proyecto */}
           <div style={s.addCard}>
             <div style={s.addPlus}>+</div>
             <div style={s.addTitle}>Próximo proyecto</div>
@@ -136,137 +116,34 @@ const s = {
   section: { background: 'var(--bg2)', padding: '110px 5%' },
   inner: { maxWidth: 1200, margin: '0 auto' },
   header: { marginBottom: 64 },
-  label: {
-    fontSize: 11, fontWeight: 600, letterSpacing: '0.2em',
-    textTransform: 'uppercase', color: 'var(--accent)',
-    marginBottom: 12, display: 'flex', alignItems: 'center', gap: 10,
-  },
+  label: { fontSize: 11, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 10 },
   labelLine: { display: 'inline-block', width: 28, height: 1, background: 'var(--accent)' },
-  title: {
-    fontFamily: 'var(--font-head)',
-    fontSize: 'clamp(36px, 5vw, 54px)',
-    fontWeight: 900, letterSpacing: '-3px',
-    color: 'var(--text)', lineHeight: 1, marginBottom: 12,
-  },
-  titleEm: {
-    fontFamily: 'Georgia, "Times New Roman", serif',
-    fontStyle: 'italic', fontWeight: 400,
-    color: 'var(--accent)', letterSpacing: '-1px',
-  },
+  title: { fontFamily: 'var(--font-head)', fontSize: 'clamp(36px, 5vw, 54px)', fontWeight: 900, letterSpacing: '-3px', color: 'var(--text)', lineHeight: 1, marginBottom: 12 },
+  titleEm: { fontFamily: 'Georgia, "Times New Roman", serif', fontStyle: 'italic', fontWeight: 400, color: 'var(--accent)', letterSpacing: '-1px' },
   sub: { fontSize: 15, color: 'rgba(255,255,255,0.3)', fontWeight: 300 },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-    gap: 16,
-  },
-  card: {
-    background: 'var(--card)',
-    border: '1px solid rgba(255,255,255,0.07)',
-    borderRadius: 16, overflow: 'hidden',
-    transition: 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, border-color 0.25s',
-    cursor: 'default',
-  },
-  cardHover: {
-    transform: 'translateY(-6px)',
-    boxShadow: '0 20px 50px rgba(0,0,0,0.4)',
-    borderColor: 'rgba(232,58,58,0.25)',
-  },
-  thumb: {
-    height: 200, display: 'flex',
-    alignItems: 'center', justifyContent: 'center',
-    position: 'relative',
-  },
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 16 },
+  card: { background: 'var(--card)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, overflow: 'hidden', transition: 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, border-color 0.25s', cursor: 'default' },
+  cardHover: { transform: 'translateY(-6px)', boxShadow: '0 20px 50px rgba(0,0,0,0.4)', borderColor: 'rgba(232,58,58,0.25)' },
+  thumb: { height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' },
   thumbContent: { textAlign: 'center' },
-  thumbRM: {
-    fontFamily: 'var(--font-head)',
-    fontSize: 42, fontWeight: 900,
-    color: 'rgba(232,58,58,0.6)',
-    letterSpacing: '-2px', lineHeight: 1,
-  },
-  thumbSub: {
-    fontSize: 10, color: 'rgba(255,255,255,0.2)',
-    letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 6,
-  },
-  liveBadge: {
-    position: 'absolute', top: 14, right: 14,
-    display: 'flex', alignItems: 'center', gap: 5,
-    background: 'rgba(34,197,94,0.1)',
-    border: '1px solid rgba(34,197,94,0.2)',
-    borderRadius: 100, padding: '4px 10px',
-    fontSize: 10, fontWeight: 600,
-    letterSpacing: '0.1em', textTransform: 'uppercase',
-    color: '#4ade80',
-  },
-  liveDot: {
-    display: 'inline-block', width: 5, height: 5,
-    borderRadius: '50%', background: '#4ade80',
-    animation: 'pulse 2s infinite',
-  },
+  thumbRM: { fontFamily: 'var(--font-head)', fontSize: 42, fontWeight: 900, color: 'rgba(232,58,58,0.6)', letterSpacing: '-2px', lineHeight: 1 },
+  thumbSub: { fontSize: 10, color: 'rgba(255,255,255,0.2)', letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 6 },
+  liveBadge: { position: 'absolute', top: 14, right: 14, display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: 100, padding: '4px 10px', fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#4ade80' },
+  liveDot: { display: 'inline-block', width: 5, height: 5, borderRadius: '50%', background: '#4ade80', animation: 'pulse 2s infinite' },
   body: { padding: '24px' },
   tags: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 },
-  tagAccent: {
-    fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase',
-    color: 'rgba(232,58,58,0.8)', background: 'rgba(232,58,58,0.06)',
-    border: '1px solid rgba(232,58,58,0.18)', padding: '3px 9px', borderRadius: 5,
-  },
-  tag: {
-    fontSize: 10, fontWeight: 500,
-    color: 'rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.04)',
-    border: '1px solid rgba(255,255,255,0.08)', padding: '3px 9px', borderRadius: 5,
-  },
-  name: {
-    fontFamily: 'var(--font-head)',
-    fontSize: 20, fontWeight: 800, color: 'var(--text)',
-    letterSpacing: '-0.5px', marginBottom: 10,
-  },
-  desc: {
-    fontSize: 13, color: 'rgba(255,255,255,0.4)',
-    lineHeight: 1.75, fontWeight: 300, marginBottom: 20,
-  },
-  highlights: {
-    display: 'flex', flexDirection: 'column', gap: 6,
-    marginBottom: 24,
-    padding: '16px',
-    background: 'rgba(255,255,255,0.02)',
-    border: '1px solid rgba(255,255,255,0.05)',
-    borderRadius: 8,
-  },
-  highlight: {
-    display: 'flex', alignItems: 'center', gap: 8,
-    fontSize: 12, color: 'rgba(255,255,255,0.45)', fontWeight: 300,
-  },
-  highlightDot: {
-    width: 4, height: 4, borderRadius: '50%',
-    background: 'var(--accent)', flexShrink: 0, opacity: 0.7,
-  },
+  tagAccent: { fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(232,58,58,0.8)', background: 'rgba(232,58,58,0.06)', border: '1px solid rgba(232,58,58,0.18)', padding: '3px 9px', borderRadius: 5 },
+  tag: { fontSize: 10, fontWeight: 500, color: 'rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '3px 9px', borderRadius: 5 },
+  name: { fontFamily: 'var(--font-head)', fontSize: 20, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.5px', marginBottom: 10 },
+  desc: { fontSize: 13, color: 'rgba(255,255,255,0.4)', lineHeight: 1.75, fontWeight: 300, marginBottom: 20 },
+  highlights: { display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 24, padding: '16px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 8 },
+  highlight: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'rgba(255,255,255,0.45)', fontWeight: 300 },
+  highlightDot: { width: 4, height: 4, borderRadius: '50%', background: 'var(--accent)', flexShrink: 0, opacity: 0.7 },
   footer: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
   links: { display: 'flex', gap: 10, alignItems: 'center' },
-  linkPrimary: {
-    display: 'inline-flex', alignItems: 'center', gap: 6,
-    fontSize: 13, fontWeight: 500, color: '#fff',
-    background: 'var(--accent)',
-    padding: '9px 18px', borderRadius: 7,
-    textDecoration: 'none',
-    boxShadow: '0 4px 16px rgba(232,58,58,0.25)',
-    transition: 'background 0.2s, transform 0.15s',
-  },
-  linkGithub: {
-    display: 'inline-flex', alignItems: 'center', gap: 6,
-    fontSize: 12, fontWeight: 500,
-    color: 'rgba(255,255,255,0.5)',
-    border: '1px solid rgba(255,255,255,0.1)',
-    padding: '8px 14px', borderRadius: 7,
-    textDecoration: 'none',
-    transition: 'border-color 0.2s, color 0.2s',
-  },
-  addCard: {
-    background: 'rgba(255,255,255,0.015)',
-    border: '1px dashed rgba(255,255,255,0.07)',
-    borderRadius: 16, minHeight: 340,
-    display: 'flex', flexDirection: 'column',
-    alignItems: 'center', justifyContent: 'center',
-    gap: 8, padding: 40,
-  },
+  linkPrimary: { display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500, color: '#fff', background: 'var(--accent)', padding: '9px 18px', borderRadius: 7, textDecoration: 'none', boxShadow: '0 4px 16px rgba(232,58,58,0.25)', transition: 'background 0.2s, transform 0.15s' },
+  linkGithub: { display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 500, color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.1)', padding: '8px 14px', borderRadius: 7, textDecoration: 'none', transition: 'border-color 0.2s, color 0.2s' },
+  addCard: { background: 'rgba(255,255,255,0.015)', border: '1px dashed rgba(255,255,255,0.07)', borderRadius: 16, minHeight: 340, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 40 },
   addPlus: { fontSize: 28, color: 'rgba(255,255,255,0.07)', marginBottom: 4 },
   addTitle: { fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.1)' },
   addText: { fontSize: 12, color: 'rgba(255,255,255,0.07)', textAlign: 'center' },
