@@ -68,7 +68,6 @@ export default function ExperienceEducation() {
     <section id="experience" style={s.section}>
       <div style={s.inner}>
 
-        {/* Header */}
         <div style={s.header}>
           <p style={s.label}><span style={s.labelLine} />Trayectoria</p>
           <h2 style={s.title}>
@@ -76,10 +75,9 @@ export default function ExperienceEducation() {
           </h2>
         </div>
 
-        {/* Columnas principales */}
         <div style={s.twoCol} className="exp-two-col">
 
-          {/* Timeline izquierda */}
+          {/* Timeline */}
           <div style={s.timeline} className="exp-timeline">
             <div style={s.tlLine} />
 
@@ -107,7 +105,6 @@ export default function ExperienceEducation() {
               </div>
             ))}
 
-            {/* Experiencia adicional */}
             <div style={s.tlItem}>
               <div style={{ ...s.tlDot, ...s.tlDotFaded }} className="exp-tl-dot" />
               <div style={s.tlTop}>
@@ -122,16 +119,25 @@ export default function ExperienceEducation() {
             </div>
           </div>
 
-          {/* Educación derecha */}
+          {/* Educación */}
           <div>
             <div style={s.eduColLabel}>
-              <span style={s.eduColLabelLine} />
-              Formación
+              <span style={s.eduColLabelLine} />Formación
             </div>
             {education.map((edu, i) => (
               <div
                 key={i}
-                style={{ ...s.eduCard, ...(edu.tag ? s.eduCardAccent : {}), ...(hoveredEdu === i ? s.eduCardHover : {}) }}
+                style={{
+                  ...s.eduCard,
+                  transform: hoveredEdu === i ? 'translateY(-2px)' : 'none',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: hoveredEdu === i
+                    ? 'rgba(232,58,58,0.3)'
+                    : edu.tag
+                    ? 'rgba(232,58,58,0.15)'
+                    : 'rgba(255,255,255,0.07)',
+                }}
                 onMouseEnter={() => setHoveredEdu(i)}
                 onMouseLeave={() => setHoveredEdu(null)}
               >
@@ -164,14 +170,21 @@ export default function ExperienceEducation() {
             ))}
           </div>
 
-          {/* Soft skills */}
           <div style={s.softSection}>
             <p style={s.softLabel}>Habilidades personales</p>
             <div style={s.softGrid} className="exp-soft-grid">
               {softSkills.map((sk, i) => (
-                <div key={i} style={s.softCard}
-                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.borderColor = 'rgba(232,58,58,0.2)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'; }}
+                <div
+                  key={i}
+                  style={s.softCard}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = 'translateX(4px)';
+                    e.currentTarget.style.borderColor = 'rgba(232,58,58,0.2)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = 'none';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)';
+                  }}
                 >
                   <span style={s.softDot} />
                   <span style={s.softText}>{sk}</span>
@@ -187,54 +200,56 @@ export default function ExperienceEducation() {
 }
 
 const s = {
-  section: { background: 'var(--bg)', padding: '110px 5%' },
-  inner: { maxWidth: 1200, margin: '0 auto' },
-  header: { marginBottom: 64 },
-  label: { fontSize: 11, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 10 },
-  labelLine: { display: 'inline-block', width: 28, height: 1, background: 'var(--accent)' },
-  title: { fontFamily: 'var(--font-head)', fontSize: 'clamp(36px, 5vw, 54px)', fontWeight: 900, letterSpacing: '-3px', color: 'var(--text)', lineHeight: 1 },
-  titleEm: { fontFamily: 'Georgia, "Times New Roman", serif', fontStyle: 'italic', fontWeight: 400, color: 'var(--accent)', letterSpacing: '-1px' },
-  twoCol: { display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: 80, alignItems: 'start', marginBottom: 80 },
+  section:  { background: 'var(--bg)', padding: '110px 5%' },
+  inner:    { maxWidth: 1200, margin: '0 auto' },
+  header:   { marginBottom: 64 },
+  label:    { fontSize: 11, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 10 },
+  labelLine:{ display: 'inline-block', width: 28, height: 1, background: 'var(--accent)' },
+  title:    { fontFamily: 'var(--font-head)', fontSize: 'clamp(36px, 5vw, 54px)', fontWeight: 900, letterSpacing: '-3px', color: 'var(--text)', lineHeight: 1 },
+  titleEm:  { fontFamily: 'Georgia, "Times New Roman", serif', fontStyle: 'italic', fontWeight: 400, color: 'var(--accent)', letterSpacing: '-1px' },
+
+  twoCol:   { display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: 80, alignItems: 'start', marginBottom: 80 },
+
   timeline: { position: 'relative', paddingLeft: 28 },
-  tlLine: { position: 'absolute', left: 0, top: 8, bottom: 0, width: 1, background: 'linear-gradient(to bottom, #e83a3a, rgba(232,58,58,0.08))' },
-  tlItem: { position: 'relative', marginBottom: 48 },
-  tlDot: { position: 'absolute', left: -34, top: 8, width: 12, height: 12, borderRadius: '50%', background: 'var(--accent)', border: '2px solid var(--bg2)', boxShadow: '0 0 12px rgba(232,58,58,0.5)' },
+  tlLine:   { position: 'absolute', left: 0, top: 8, bottom: 0, width: 1, background: 'linear-gradient(to bottom, #e83a3a, rgba(232,58,58,0.08))' },
+  tlItem:   { position: 'relative', marginBottom: 48 },
+  tlDot:    { position: 'absolute', left: -34, top: 8, width: 12, height: 12, borderRadius: '50%', background: 'var(--accent)', borderWidth: '2px', borderStyle: 'solid', borderColor: 'var(--bg2)', boxShadow: '0 0 12px rgba(232,58,58,0.5)' },
   tlDotFaded: { background: 'rgba(232,58,58,0.3)', boxShadow: 'none' },
-  tlTop: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, marginBottom: 4 },
-  tlRole: { fontSize: 17, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.5px' },
+  tlTop:    { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, marginBottom: 4, flexWrap: 'wrap' },
+  tlRole:   { fontSize: 17, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.5px' },
   tlRoleFaded: { fontSize: 14, color: 'rgba(255,255,255,0.35)', fontWeight: 500 },
   tlPeriod: { fontSize: 11, fontWeight: 500, padding: '3px 10px', borderRadius: 100, whiteSpace: 'nowrap', flexShrink: 0 },
-  tlPeriodDev: { color: 'var(--accent)', background: 'rgba(232,58,58,0.08)', border: '1px solid rgba(232,58,58,0.2)' },
-  tlPeriodOther: { color: 'rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' },
-  tlPeriodFaded: { color: 'rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' },
-  tlCompany: { fontSize: 13, color: 'rgba(255,255,255,0.35)', marginBottom: 12 },
+  tlPeriodDev:   { color: 'var(--accent)', background: 'rgba(232,58,58,0.08)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(232,58,58,0.2)' },
+  tlPeriodOther: { color: 'rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.04)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(255,255,255,0.08)' },
+  tlPeriodFaded: { color: 'rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.03)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(255,255,255,0.06)' },
+  tlCompany:     { fontSize: 13, color: 'rgba(255,255,255,0.35)', marginBottom: 12 },
   tlCompanyName: { color: 'rgba(232,58,58,0.7)' },
-  tlBullets: { listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 7 },
-  tlBullet: { display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.65, fontWeight: 300 },
-  tlArrow: { color: 'var(--accent)', flexShrink: 0, marginTop: 3, fontSize: 10 },
-  tlChips: { display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 },
-  tlChip: { fontSize: 11, color: 'rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', padding: '3px 10px', borderRadius: 6 },
-  eduColLabel: { fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 },
+  tlBullets:     { listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 7 },
+  tlBullet:      { display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.65, fontWeight: 300 },
+  tlArrow:       { color: 'var(--accent)', flexShrink: 0, marginTop: 3, fontSize: 10 },
+  tlChips:       { display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 },
+  tlChip:        { fontSize: 11, color: 'rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.03)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(255,255,255,0.07)', padding: '3px 10px', borderRadius: 6 },
+
+  eduColLabel:     { fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 },
   eduColLabelLine: { display: 'inline-block', flex: 1, height: 1, background: 'rgba(255,255,255,0.07)' },
-  eduCard: { background: 'var(--bg)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: '18px 20px', marginBottom: 8, transition: 'border-color 0.2s, transform 0.2s', cursor: 'default' },
-  eduCardAccent: { borderColor: 'rgba(232,58,58,0.15)' },
-  eduCardHover: { transform: 'translateY(-2px)', borderColor: 'rgba(232,58,58,0.3)' },
-  eduTag: { fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: 6 },
-  eduDegree: { fontSize: 14, fontWeight: 700, color: 'var(--text)', marginBottom: 4, lineHeight: 1.3 },
-  eduSchool: { fontSize: 12, color: 'rgba(232,58,58,0.65)', marginBottom: 3 },
-  eduPeriod: { fontSize: 11, color: 'rgba(255,255,255,0.25)' },
+  eduCard:         { background: 'var(--bg)', borderRadius: 12, padding: '18px 20px', marginBottom: 8, transition: 'border-color 0.2s, transform 0.2s', cursor: 'default' },
+  eduTag:          { fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: 6 },
+  eduDegree:       { fontSize: 14, fontWeight: 700, color: 'var(--text)', marginBottom: 4, lineHeight: 1.3 },
+  eduSchool:       { fontSize: 12, color: 'rgba(232,58,58,0.65)', marginBottom: 3 },
+  eduPeriod:       { fontSize: 11, color: 'rgba(255,255,255,0.25)' },
+
   stackSection: { paddingTop: 64, borderTop: '1px solid rgba(255,255,255,0.07)' },
-  stackHeader: { marginBottom: 28 },
-  stackLabel: { fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 4 },
-  stackSub: { fontSize: 13, color: 'rgba(255,255,255,0.2)', fontWeight: 300 },
-  stackGrid: { display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 48 },
-  chip: { fontSize: 13, color: 'rgba(255,255,255,0.5)', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', padding: '7px 14px', borderRadius: 7, transition: 'transform 0.18s', cursor: 'default' },
-  chipHot: { fontSize: 13, fontWeight: 500, color: 'rgba(232,58,58,0.85)', background: 'rgba(232,58,58,0.05)', border: '1px solid rgba(232,58,58,0.2)', padding: '7px 14px', borderRadius: 7, display: 'inline-flex', alignItems: 'center', gap: 6, transition: 'transform 0.18s', cursor: 'default' },
-  chipDot: { display: 'inline-block', width: 5, height: 5, borderRadius: '50%', background: 'var(--accent)', flexShrink: 0 },
-  softSection: {},
-  softLabel: { fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', marginBottom: 16 },
-  softGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 8 },
-  softCard: { background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 8, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10, transition: 'transform 0.18s, border-color 0.18s', cursor: 'default' },
-  softDot: { width: 4, height: 4, borderRadius: '50%', background: 'var(--accent)', flexShrink: 0, opacity: 0.6 },
-  softText: { fontSize: 13, color: 'rgba(255,255,255,0.45)', fontWeight: 300 },
+  stackHeader:  { marginBottom: 28 },
+  stackLabel:   { fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 4 },
+  stackSub:     { fontSize: 13, color: 'rgba(255,255,255,0.2)', fontWeight: 300 },
+  stackGrid:    { display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 48 },
+  chip:         { fontSize: 13, color: 'rgba(255,255,255,0.5)', background: 'rgba(255,255,255,0.04)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(255,255,255,0.09)', padding: '7px 14px', borderRadius: 7, transition: 'transform 0.18s', cursor: 'default' },
+  chipHot:      { fontSize: 13, fontWeight: 500, color: 'rgba(232,58,58,0.85)', background: 'rgba(232,58,58,0.05)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(232,58,58,0.2)', padding: '7px 14px', borderRadius: 7, display: 'inline-flex', alignItems: 'center', gap: 6, transition: 'transform 0.18s', cursor: 'default' },
+  chipDot:      { display: 'inline-block', width: 5, height: 5, borderRadius: '50%', background: 'var(--accent)', flexShrink: 0 },
+  softSection:  {},
+  softLabel:    { fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', marginBottom: 16 },
+  softGrid:     { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 8 },
+  softCard:     { background: 'rgba(255,255,255,0.02)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(255,255,255,0.07)', borderRadius: 8, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10, transition: 'transform 0.18s, border-color 0.18s', cursor: 'default' },
+  softDot:      { width: 4, height: 4, borderRadius: '50%', background: 'var(--accent)', flexShrink: 0, opacity: 0.6 },
+  softText:     { fontSize: 13, color: 'rgba(255,255,255,0.45)', fontWeight: 300 },
 };

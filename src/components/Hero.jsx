@@ -1,10 +1,21 @@
-// src/components/Hero.jsx
+// Hero.jsx
+// Sección principal del portfolio. Video de fondo, texto a la izquierda, foto a la derecha.
+
 import '../Hero.css';
+
+// Los stats que aparecen abajo del todo
+const stats = [
+  { n: '4', suf: '+', label: 'meses en\nempresa real' },
+  { n: '6', suf: '+', label: 'tecnologías\naprendidas'  },
+  { n: '3', suf: '+', label: 'años de\ntrabajo duro'   },
+];
+
 export default function Hero() {
   return (
     <section id="hero" className="hero-section">
 
-      <video autoPlay loop muted playsInline className="hero-video">
+      {/* Video de fondo — si no carga muestra el color de fondo */}
+      <video autoPlay loop muted playsInline preload="auto" className="hero-video">
         <source src="/hero-video.mp4" type="video/mp4" />
       </video>
       <div className="hero-overlay" />
@@ -12,60 +23,68 @@ export default function Hero() {
 
       <div className="hero-layout">
 
-        {/* ── IZQUIERDA ── */}
+        {/* Columna izquierda — todo el texto */}
         <div className="hero-left">
 
+          {/* Badge de disponibilidad */}
           <div className="hero-badge">
             <span className="hero-badge-dot" />
             Disponible para trabajar
           </div>
 
+          {/* Nombre */}
           <p className="hero-greeting">Hola, soy</p>
           <h1 className="hero-name">
             Rubén<br />
             <span className="hero-name-accent">Marco</span>
           </h1>
 
-          <div className="hero-role-row">
-            <span className="hero-role">Desarrollador Full Stack</span>
-            <span className="hero-sep">·</span>
-            <span className="hero-role-junior">Junior</span>
+          {/* Rol y stack como etiquetas, sin puntos raros */}
+          <p className="hero-role">Desarrollador Full Stack</p>
+          <div className="hero-stack-row">
+            <span className="hero-stack-item">React</span>
+            <span className="hero-stack-item">.NET / C#</span>
+            <span className="hero-stack-item">SQL Server</span>
           </div>
-          <span className="hero-stack">React · .NET / C# · SQL Server</span>
 
+          {/* Descripción — escrita como persona, no como chatbot */}
           <p className="hero-desc">
             Recién formado en <strong>Desarrollo de Aplicaciones Web</strong>,
             con experiencia real en Mercanza trabajando en un entorno Full Stack profesional.
             Busco mi primer empleo donde seguir creciendo y aportar desde el primer día.
           </p>
 
+          {/* Botones de acción */}
           <div className="hero-actions">
-            <a href="#contact" className="btn-primary">Contáctame →</a>
-            <a href="#experience" className="btn-secondary">Ver mi trabajo</a>
+            <a href="#contact"  className="btn-primary">Contáctame</a>
+            <a href="#projects" className="btn-secondary">Ver mi trabajo</a>
           </div>
 
+          {/* Stats honestos */}
           <div className="hero-stats">
-            {[
-              { n: '4', suf: '+', l: 'meses en\nempresa real' },
-              { n: '6', suf: '+', l: 'tecnologías\naprendidas' },
-              { n: '3', suf: '+', l: 'años de\ntrabajo duro' },
-            ].map((st, i) => (
+            {stats.map((st, i) => (
               <div key={i} className={`hero-stat ${i > 0 ? 'hero-stat-border' : ''}`}>
-                <div className="hero-stat-n">{st.n}<span className="hero-stat-accent">{st.suf}</span></div>
-                <div className="hero-stat-l">{st.l}</div>
+                <div className="hero-stat-n">
+                  {st.n}<span className="hero-stat-accent">{st.suf}</span>
+                </div>
+                <div className="hero-stat-l">{st.label}</div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* ── DERECHA — FOTO ── */}
+        {/* Columna derecha — foto */}
         <div className="hero-right">
           <div className="hero-photo-wrap">
+
+            {/* Anillo decorativo que gira */}
             <div className="hero-ring">
-              <span className="hero-ring-dot" style={{ top: '2%', left: '50%', transform: 'translateX(-50%)' }} />
+              <span className="hero-ring-dot" style={{ top: '2%',  left: '50%', transform: 'translateX(-50%)' }} />
               <span className="hero-ring-dot" style={{ bottom: '2%', left: '50%', transform: 'translateX(-50%)' }} />
-              <span className="hero-ring-dot" style={{ left: '2%', top: '50%', transform: 'translateY(-50%)' }} />
+              <span className="hero-ring-dot" style={{ left: '2%', top: '50%',  transform: 'translateY(-50%)' }} />
             </div>
+
+            {/* Marco de la foto — si no encuentra foto.png muestra las iniciales */}
             <div className="hero-photo-frame">
               <img
                 src="/foto.png"
@@ -81,22 +100,18 @@ export default function Hero() {
               </div>
             </div>
           </div>
+
+          {/* Info debajo de la foto */}
           <div className="hero-photo-card">
             <div className="hero-card-name">Rubén Marco</div>
             <div className="hero-card-role">
               <span className="hero-card-dot" />
-              Disponible · Madrid
+              24 años · Madrid
             </div>
           </div>
         </div>
 
       </div>
-
-      <div className="hero-scroll-hint">
-        <div className="hero-scroll-bar" />
-        <span>scroll</span>
-      </div>
-
     </section>
   );
 }

@@ -1,5 +1,6 @@
-/* src/hero.css — importar en Hero.jsx o añadir a index.css */
+/* Hero.css — estilos del hero, separados para mantenerlo ordenado */
 
+/* Sección base */
 .hero-section {
   min-height: 100vh;
   display: flex;
@@ -10,6 +11,7 @@
   background: #0a0a0c;
 }
 
+/* Video de fondo */
 .hero-video {
   position: absolute;
   inset: 0;
@@ -19,6 +21,7 @@
   z-index: 0;
 }
 
+/* Capa oscura encima del video */
 .hero-overlay {
   position: absolute;
   inset: 0;
@@ -26,6 +29,7 @@
   z-index: 1;
 }
 
+/* Grid sutil de fondo */
 .hero-grid {
   position: absolute;
   inset: 0;
@@ -37,6 +41,7 @@
   pointer-events: none;
 }
 
+/* Layout principal: texto izquierda, foto derecha */
 .hero-layout {
   position: relative;
   z-index: 4;
@@ -47,7 +52,7 @@
   gap: 40px;
 }
 
-/* ── LEFT ── */
+/* ── COLUMNA IZQUIERDA ── */
 .hero-left { flex: 1; min-width: 0; }
 
 .hero-badge {
@@ -68,7 +73,8 @@
 
 .hero-badge-dot {
   display: inline-block;
-  width: 6px; height: 6px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--accent);
   animation: pulse 2s infinite;
@@ -93,25 +99,33 @@
 
 .hero-name-accent { color: var(--accent); }
 
-.hero-role-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
-  flex-wrap: wrap;
+/* Rol — texto simple, alineado a la izquierda en desktop */
+.hero-role {
+  font-size: clamp(14px, 2vw, 20px);
+  font-weight: 400;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 12px;
+  text-align: left;
 }
 
-.hero-role { font-size: clamp(14px, 2vw, 20px); font-weight: 400; color: rgba(255,255,255,0.55); }
-.hero-role-junior { font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.3); }
-.hero-sep { color: rgba(232,58,58,0.4); }
+/* Etiquetas del stack tecnológico */
+.hero-stack-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+  justify-content: flex-start;
+}
 
-.hero-stack {
-  display: block;
-  font-size: 13px;
+.hero-stack-item {
+  font-size: 12px;
   font-weight: 500;
   color: rgba(232,58,58,0.75);
+  background: rgba(232,58,58,0.06);
+  border: 1px solid rgba(232,58,58,0.18);
+  padding: 4px 12px;
+  border-radius: 100px;
   letter-spacing: 0.04em;
-  margin-bottom: 28px;
 }
 
 .hero-desc {
@@ -161,19 +175,20 @@
 }
 .btn-secondary:hover { border-color: rgba(255,255,255,0.28); color: #fff; }
 
+/* Stats al final */
 .hero-stats {
   display: flex;
   padding-top: 32px;
   border-top: 1px solid rgba(255,255,255,0.07);
 }
 
-.hero-stat { padding: 0 24px 0 0; }
+.hero-stat        { padding: 0 24px 0 0; }
 .hero-stat-border { padding-left: 24px; border-left: 1px solid rgba(255,255,255,0.07); }
-.hero-stat-n { font-family: var(--font-head); font-size: 32px; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 4px; }
+.hero-stat-n      { font-family: var(--font-head); font-size: 32px; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 4px; }
 .hero-stat-accent { color: var(--accent); }
-.hero-stat-l { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 0.05em; line-height: 1.5; white-space: pre-line; }
+.hero-stat-l      { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 0.05em; line-height: 1.5; white-space: pre-line; }
 
-/* ── RIGHT — FOTO ── */
+/* ── COLUMNA DERECHA — FOTO ── */
 .hero-right {
   flex-shrink: 0;
   display: flex;
@@ -182,7 +197,7 @@
   gap: 16px;
 }
 
-.hero-photo-wrap { position: relative; width: 260px; height: 320px; }
+.hero-photo-wrap  { position: relative; width: 260px; height: 320px; }
 
 .hero-ring {
   position: absolute;
@@ -243,37 +258,10 @@
 
 .hero-card-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
 .hero-card-role { font-size: 11px; color: rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; gap: 5px; }
-.hero-card-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #22c55e; }
-
-/* ── SCROLL HINT ── */
-.hero-scroll-hint {
-  position: absolute;
-  bottom: 28px; left: 50%;
-  transform: translateX(-50%);
-  z-index: 5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  color: rgba(255,255,255,0.18);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.hero-scroll-bar {
-  width: 1px; height: 36px;
-  background: linear-gradient(to bottom, rgba(232,58,58,0.55), transparent);
-  animation: scrollDown 2s ease-in-out infinite;
-}
-
-@keyframes scrollDown {
-  0%, 100% { opacity: 1; transform: scaleY(1); }
-  50% { opacity: 0.3; transform: scaleY(0.6); }
-}
+.hero-card-dot  { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #22c55e; }
 
 /* ════════════════════════════════════════
-   RESPONSIVE HERO
+   RESPONSIVE — móvil
    ════════════════════════════════════════ */
 @media (max-width: 768px) {
   .hero-section {
@@ -288,23 +276,25 @@
     gap: 36px;
   }
 
-  /* Foto arriba */
+  /* Foto arriba, texto abajo */
   .hero-right { order: -1; }
   .hero-left  { order: 1; width: 100%; }
 
   /* Foto más pequeña */
-  .hero-photo-wrap { width: 180px; height: 220px; }
+  .hero-photo-wrap  { width: 180px; height: 220px; }
   .hero-photo-frame { width: 180px; height: 220px; border-radius: 100px 100px 60px 60px; }
-  .hero-photo-card { width: 180px; }
-  .hero-ring { inset: -14px; }
+  .hero-photo-card  { width: 180px; }
+  .hero-ring        { inset: -14px; }
 
-  /* Centrar elementos */
-  .hero-badge { align-self: center; }
-  .hero-role-row { justify-content: center; }
-  .hero-actions { justify-content: center; }
-  .hero-stats { justify-content: center; }
+  /* Centrar todo */
+  .hero-badge     { align-self: center; }
+  .hero-role      { text-align: center; }
+  .hero-stack-row { justify-content: center; }
+  .hero-role-row  { justify-content: center; }
+  .hero-actions   { justify-content: center; }
+  .hero-stats     { justify-content: center; }
 
-  /* Quitar borde izquierdo en desc */
+  /* Sin borde izquierdo en la descripción */
   .hero-desc {
     border-left: none;
     padding-left: 0;
@@ -314,8 +304,8 @@
 }
 
 @media (max-width: 480px) {
-  .hero-photo-wrap { width: 150px; height: 185px; }
+  .hero-photo-wrap  { width: 150px; height: 185px; }
   .hero-photo-frame { width: 150px; height: 185px; border-radius: 80px 80px 50px 50px; }
-  .hero-photo-card { width: 150px; }
-  .hero-name { font-size: clamp(42px, 12vw, 60px) !important; }
+  .hero-photo-card  { width: 150px; }
+  .hero-name        { font-size: clamp(42px, 12vw, 60px) !important; }
 }
