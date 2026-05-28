@@ -1,11 +1,13 @@
 // src/components/About.jsx
 import { useState } from 'react';
+import ParticlesBg from './ParticlesBg';
 
 export default function About() {
   const [hovered, setHovered] = useState(null);
 
   return (
-    <section id="about" style={s.section}>
+      <section id="about" style={{ ...s.section, position: 'relative' }}>
+  <ParticlesBg opacity={0.5} />
       <div style={s.inner}>
 
         <div style={s.header}>
@@ -165,7 +167,7 @@ export default function About() {
 
 const s = {
   section:   { background: 'var(--bg2)', padding: '110px 5%', fontFamily: 'var(--font-body)' },
-  inner:     { maxWidth: 1200, margin: '0 auto' },
+  inner: { maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 },
   header:    { marginBottom: 72 },
   label:     { fontSize: 11, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 10 },
   labelLine: { display: 'inline-block', width: 28, height: 1, background: 'var(--accent)' },

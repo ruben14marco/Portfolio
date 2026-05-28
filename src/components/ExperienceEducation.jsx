@@ -1,5 +1,6 @@
 // src/components/ExperienceEducation.jsx
 import { useState } from 'react';
+import ParticlesBg from './ParticlesBg';
 
 const experience = [
   {
@@ -66,6 +67,10 @@ export default function ExperienceEducation() {
 
   return (
     <section id="experience" style={s.section}>
+      
+      {/* FONDO OSCURO PARA HACER CONTRASTE CON LA SECCIÓN ANTERIOR */}
+      <ParticlesBg colorRGB="8, 8, 10" />
+
       <div style={s.inner}>
 
         <div style={s.header}>
@@ -200,8 +205,11 @@ export default function ExperienceEducation() {
 }
 
 const s = {
-  section:  { background: 'var(--bg)', padding: '110px 5%' },
-  inner:    { maxWidth: 1200, margin: '0 auto' },
+  // AÑADIDO position: relative y overflow: hidden
+  section:  { background: 'var(--bg)', padding: '110px 5%', position: 'relative', overflow: 'hidden' },
+  // AÑADIDO position: relative y zIndex: 2
+  inner:    { maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 2 },
+  
   header:   { marginBottom: 64 },
   label:    { fontSize: 11, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 10 },
   labelLine:{ display: 'inline-block', width: 28, height: 1, background: 'var(--accent)' },
