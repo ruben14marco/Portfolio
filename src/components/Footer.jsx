@@ -7,6 +7,7 @@ const GITHUB   = 'https://github.com/ruben14marco';
 const LINKEDIN = 'https://www.linkedin.com/in/rubén-marco-aa992b234';
 const GMAIL    = 'https://mail.google.com/mail/?view=cm&to=ruben14marco@gmail.com';
 const YEAR     = new Date().getFullYear();
+const VIDEO_SRC = '/videofooter.mov';
 
 const NAV_LINKS = [
   { label: 'Sobre mí',    href: '#about'      },
@@ -16,10 +17,66 @@ const NAV_LINKS = [
 ];
 
 
+// ─── Hook: chroma key negro en canvas ────────────────────────────────────────
+// Cada instancia tiene su propio video + canvas, completamente independientes
+function useChroma() {
+  const videoRef  = useRef(null);
+  const chromaRef = useRef(null);
+
+  useEffect(() => {
+    const video  = videoRef.current;
+    const canvas = chromaRef.current;
+    if (!video || !canvas) return;
+
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    let animId;
+
+    const onLoaded = () => {
+      canvas.width  = video.videoWidth;
+      canvas.height = video.videoHeight;
+    };
+    video.addEventListener('loadedmetadata', onLoaded);
+
+    const drawFrame = () => {
+      if (!video.paused && !video.ended && video.videoWidth > 0) {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const d = frame.data;
+        for (let i = 0; i < d.length; i += 4) {
+          if (d[i] < 40 && d[i+1] < 40 && d[i+2] < 40) d[i+3] = 0;
+        }
+        ctx.putImageData(frame, 0, 0);
+      }
+      animId = requestAnimationFrame(drawFrame);
+    };
+
+    video.play().then(() => drawFrame()).catch(() => {});
+
+    return () => {
+      cancelAnimationFrame(animId);
+      video.removeEventListener('loadedmetadata', onLoaded);
+    };
+  }, []);
+
+  return { videoRef, chromaRef };
+}
+
+
+// ─── Componente del personaje (video + canvas) ───────────────────────────────
+function PixelChar({ height }) {
+  const { videoRef, chromaRef } = useChroma();
+  return (
+    <>
+      <video ref={videoRef} src={VIDEO_SRC} muted loop playsInline style={{ display: 'none' }} />
+      <canvas ref={chromaRef} style={{ height, width: 'auto', imageRendering: 'auto', display: 'block' }} />
+    </>
+  );
+}
+
+
 // ─── Componente principal ─────────────────────────────────────────────────────
 export default function Footer() {
   const canvasRef = useRef(null);
-  const videoRef  = useRef(null);
   const footerRef = useRef(null);
 
   const [isMobile, setIsMobile] = useState(false);
@@ -31,29 +88,7 @@ export default function Footer() {
     return () => mql.removeEventListener('change', onChange);
   }, []);
 
-  // Arranca el video cuando el footer entra en pantalla, se pausa al salir
-  useEffect(() => {
-    const video  = videoRef.current;
-    const footer = footerRef.current;
-    if (!video || !footer) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          video.play().catch(() => {});
-        } else {
-          video.pause();
-          video.currentTime = 0;
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    observer.observe(footer);
-    return () => observer.disconnect();
-  }, []);
-
-  // Partículas — más lentas y escasas que en el resto del portfolio
+  // Partículas de fondo
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx    = canvas.getContext('2d');
@@ -61,150 +96,117 @@ export default function Footer() {
     let animId;
     let mouse = { x: -9999, y: -9999 };
 
-    const N    = 28;
-    const CONN = 160;
-    const MD   = 150;
+    const N = 28, CONN = 160, MD = 150;
     let W, H, pts;
 
-    const resize = () => {
-      W = canvas.width  = footer.offsetWidth;
-      H = canvas.height = footer.offsetHeight;
-    };
-
-    const init = () => {
+    const resize = () => { W = canvas.width = footer.offsetWidth; H = canvas.height = footer.offsetHeight; };
+    const init   = () => {
       pts = Array.from({ length: N }, () => ({
-        x:  Math.random() * W,
-        y:  Math.random() * H,
-        vx: (Math.random() - 0.5) * 0.18,
-        vy: (Math.random() - 0.5) * 0.18,
-        r:  Math.random() * 2.5 + 1,
-        a:  Math.random() * 0.3 + 0.15,
+        x: Math.random() * W, y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.18, vy: (Math.random() - 0.5) * 0.18,
+        r: Math.random() * 2.5 + 1, a: Math.random() * 0.3 + 0.15,
       }));
     };
 
     const tick = () => {
       ctx.clearRect(0, 0, W, H);
-
       for (let i = 0; i < N; i++) {
         const p = pts[i];
         p.x += p.vx; p.y += p.vy;
         if (p.x < 0 || p.x > W) p.vx *= -1;
         if (p.y < 0 || p.y > H) p.vy *= -1;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(232,58,58,${p.a})`;
-        ctx.fill();
-
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(232,58,58,${p.a})`; ctx.fill();
         for (let j = i + 1; j < N; j++) {
-          const q = pts[j];
-          const d = Math.hypot(p.x - q.x, p.y - q.y);
-          if (d < CONN) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
-            ctx.strokeStyle = `rgba(232,58,58,${(1 - d / CONN) * 0.12})`;
-            ctx.lineWidth = 0.5; ctx.stroke();
-          }
+          const q = pts[j], d = Math.hypot(p.x - q.x, p.y - q.y);
+          if (d < CONN) { ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.strokeStyle = `rgba(232,58,58,${(1 - d / CONN) * 0.12})`; ctx.lineWidth = 0.5; ctx.stroke(); }
         }
-
         const dm = Math.hypot(p.x - mouse.x, p.y - mouse.y);
-        if (dm < MD) {
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = `rgba(232,58,58,${(1 - dm / MD) * 0.3})`;
-          ctx.lineWidth = 0.7; ctx.stroke();
-        }
+        if (dm < MD) { ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y); ctx.strokeStyle = `rgba(232,58,58,${(1 - dm / MD) * 0.3})`; ctx.lineWidth = 0.7; ctx.stroke(); }
       }
-
       animId = requestAnimationFrame(tick);
     };
 
     const onMove  = (e) => { const r = canvas.getBoundingClientRect(); mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; };
     const onLeave = ()  => { mouse.x = -9999; mouse.y = -9999; };
 
-    footer.addEventListener('mousemove',  onMove);
+    footer.addEventListener('mousemove', onMove);
     footer.addEventListener('mouseleave', onLeave);
     window.addEventListener('resize', () => { resize(); init(); });
-
     resize(); init(); tick();
 
-    return () => {
-      cancelAnimationFrame(animId);
-      footer.removeEventListener('mousemove',  onMove);
-      footer.removeEventListener('mouseleave', onLeave);
-    };
+    return () => { cancelAnimationFrame(animId); footer.removeEventListener('mousemove', onMove); footer.removeEventListener('mouseleave', onLeave); };
   }, []);
 
 
   // ─── Render ──────────────────────────────────────────────────────────────────
   return (
     <footer ref={footerRef} style={{ ...s.footer, padding: isMobile ? '36px 22px 28px' : '44px 5% 32px' }}>
-
       <div style={s.topLine} />
       <canvas ref={canvasRef} style={s.canvas} />
       <div style={s.bgText} aria-hidden="true">RUBÉN MARCO</div>
 
-      {/* Video con fondo negro — mix-blend-mode screen elimina el negro */}
-      <video
-        ref={videoRef}
-        src="/videofooter.mov"
-        muted
-        loop
-        playsInline
-        style={s.pixelVideo}
-      />
-
       <div style={s.inner}>
         {isMobile ? <MobileLayout /> : <DesktopLayout />}
       </div>
-
     </footer>
   );
 }
 
 
-// ─── Layout móvil: compacto, tres filas ──────────────────────────────────────
+// ─── Layout móvil ─────────────────────────────────────────────────────────────
 function MobileLayout() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
 
-      {/* Logo + badge en la misma línea */}
+      {/* Logo + badge */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={s.logo}>RM<span style={s.logoDot}>.</span></div>
         <Badge />
       </div>
 
-      {/* Iconos sociales */}
-      <div style={s.social}>
-        <SocialIcon href="https://github.com/ruben14marco"                                 title="GitHub">   <GithubIcon />   </SocialIcon>
-        <SocialIcon href="https://www.linkedin.com/in/rubén-marco-aa992b234"               title="LinkedIn"> <LinkedInIcon /> </SocialIcon>
-        <SocialIcon href="https://mail.google.com/mail/?view=cm&to=ruben14marco@gmail.com" title="Email">    <MailIcon />     </SocialIcon>
-      </div>
+      {/* Iconos a la izquierda + personaje a la derecha, alineados al fondo */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={s.social}>
+            <SocialIcon href={GITHUB}   title="GitHub">   <GithubIcon />   </SocialIcon>
+            <SocialIcon href={LINKEDIN} title="LinkedIn"> <LinkedInIcon /> </SocialIcon>
+            <SocialIcon href={GMAIL}    title="Email">    <MailIcon />     </SocialIcon>
+          </div>
+          {/* Copyright en la misma columna que los iconos */}
+          <p style={{ ...s.copy, fontSize: 11, whiteSpace: 'nowrap' }}>
+            © {new Date().getFullYear()} <strong style={s.copyStrong}>Rubén Marco</strong>
+          </p>
+        </div>
 
-      {/* Copyright */}
-      <p style={{ ...s.copy, fontSize: 11 }}>
-        © {new Date().getFullYear()} <strong style={s.copyStrong}>Rubén Marco</strong> — Hecho con React
-      </p>
+        <PixelChar height={90} />
+      </div>
 
     </div>
   );
 }
 
 
-// ─── Layout desktop: dos filas completas ─────────────────────────────────────
+// ─── Layout desktop ───────────────────────────────────────────────────────────
 function DesktopLayout() {
   return (
     <>
       {/* Fila superior */}
       <div style={s.top}>
-        <div>
-          <div style={s.logo}>RM<span style={s.logoDot}>.</span></div>
-          <p style={s.tagline}>
-            Desarrollador Full Stack con base en Madrid.<br />
-            Buscando el primer equipo donde crecer de verdad.
-          </p>
+
+        {/* Logo + personaje pegado */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 0 }}>
+          <div style={{ alignSelf: 'flex-start' }}>
+            <div style={s.logo}>RM<span style={s.logoDot}>.</span></div>
+            <p style={s.tagline}>
+              Desarrollador Full Stack con base en Madrid.<br />
+              Buscando el primer equipo donde crecer de verdad.
+            </p>
+          </div>
+          <PixelChar height={140} />
         </div>
 
+        {/* Badge + nav */}
         <div style={s.right}>
           <Badge />
           <nav style={s.nav}>
@@ -222,9 +224,7 @@ function DesktopLayout() {
 
       {/* Fila inferior */}
       <div style={s.bottom}>
-        <p style={s.copy}>
-          © {YEAR} <strong style={s.copyStrong}>Rubén Marco</strong> — Hecho con React
-        </p>
+        <p style={s.copy}>© {YEAR} <strong style={s.copyStrong}>Rubén Marco</strong> — Hecho con React</p>
         <div style={s.social}>
           <SocialIcon href={GITHUB}   title="GitHub">   <GithubIcon />   </SocialIcon>
           <SocialIcon href={LINKEDIN} title="LinkedIn"> <LinkedInIcon /> </SocialIcon>
@@ -236,7 +236,7 @@ function DesktopLayout() {
 }
 
 
-// ─── Badge "open to work" ─────────────────────────────────────────────────────
+// ─── Badge ────────────────────────────────────────────────────────────────────
 function Badge() {
   return (
     <span style={s.badge}>
@@ -291,7 +291,6 @@ function MailIcon() {
 
 // ─── Estilos ──────────────────────────────────────────────────────────────────
 const s = {
-  // Sección
   footer:    { position: 'relative', overflow: 'hidden', background: '#08080a' },
   canvas:    { position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0 },
   topLine:   { position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent 0%, rgba(232,58,58,0.6) 30%, rgba(232,58,58,0.6) 70%, transparent 100%)', zIndex: 2 },
@@ -315,7 +314,4 @@ const s = {
   icon:      { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: 9, border: '1px solid rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.28)', textDecoration: 'none', transition: 'border-color 0.2s, color 0.2s, background 0.2s', background: 'rgba(255,255,255,0.02)' },
   copy:      { fontSize: 11.5, color: 'rgba(255,255,255,0.15)', fontWeight: 300 },
   copyStrong:{ color: 'rgba(255,255,255,0.28)', fontWeight: 500 },
-
-  // Video pixel con fondo negro — screen blend elimina el negro y deja solo el personaje
-  pixelVideo: { position: 'absolute', bottom: 16, right: 24, width: 72, height: 72, objectFit: 'contain', zIndex: 3, imageRendering: 'pixelated', mixBlendMode: 'screen' },
 };
